@@ -199,7 +199,7 @@ plot.initialize = function (data) {
         
         // get x axis min and find coordinate on y axis 
         
-        //this should be the currrent axis extent 
+        // this should be the currrent axis extent 
         var xAxisMin = plot.xAxisScale.domain()[0];
         var lamda235 = 0.00000000098485000000;
         var lamda238 = 0.00000000015512500000;
@@ -209,7 +209,7 @@ plot.initialize = function (data) {
         var concordiaXMin = xAxisMin;
         var concordiaYMin = 0;
         
-        //calculate y value passing through x axis 
+        // calculate y value passing through x axis 
         age207_235 = ( 1 / lamda235 ) * Math.log( xAxisMin + 1);
         age206_238 = age207_235;
         concordiaYMin = exp ( age206_238 * lamda238 ) - 1;
@@ -220,15 +220,72 @@ plot.initialize = function (data) {
         var concordiaXMax = xAxisMax;
         var concordiaYMax = 0;
         
+        // calculate y value based on x axis extent
         age207_235 = ( 1 / lamda235 ) * Math.log( xAxisMax + 1 ); 
         age206_238 = age207_235;
         concordiaYMax = exp ( age206_238 * lamda238 ) - 1;
-        
+              
         //change axes to snap the concordia to corners 
         changeAxes( concordiaXMin, concordiaXMax, concordiaYMin, concordiaYMax );
         
     };
+<<<<<<< Updated upstream
 
+=======
+    
+    //function to show extents of ellipses, zooming out or in to capture ellipses entirely  
+    topsoil.showEllipsesExtents = function () {
+     
+        // calculate data ranges 
+        var dataXMin = d3.min(plot.data, function (d) {
+            return d.x - (d.sigma_x * (plot.uncertainty != null ? plot.uncertainty : 2));
+        });
+        var dataYMin = d3.min(plot.data, function (d) {
+            return d.y - (d.sigma_y * (plot.uncertainty != null ? plot.uncertainty : 2));
+        });
+        var dataXMax = d3.max(plot.data, function (d) {
+            return d.x + (d.sigma_x * (plot.uncertainty != null ? plot.uncertainty : 2));
+        });
+        var dataYMax = d3.max(plot.data, function (d) {
+            return d.y + (d.sigma_y * (plot.uncertainty != null ? plot.uncertainty : 2));
+        });
+        var xRange = dataXMax - dataXMin;
+        var yRange = dataYMax - dataYMin;
+        
+        // extents of data including calculations for buffer
+        ellipseXmin = dataXMin - (0.05 * xRange); 
+        ellipseYmin = dataYMin - (0.05 * yRange); 
+        ellipseXmax = dataXMax + (0.05 * xRange);  
+        ellipseYmax = dataYMax + (0.05 * yRange); 
+        
+        // extents of plot 
+        var plotXmin = plot.xAxisScale.domain()[0];
+        var plotXmax = plot.xAxisScale.domain()[1];
+        var plotYmin = plot.yAxisScale.domain()[0];
+        var plotYmax = plot.yAxisScale.domain()[1];
+        
+        var aspectRatio = yRange / xRange; 
+        var centerYcoord = plotYmin + ((plotYmax - plotYmin) / 2);
+        var yDistanceAwayTop = Math.abs(ellipseYmax - centerYcoord);
+        var yDistanceAwayBottom = Math.abs(ellipseYmin - centerYcoord);
+            
+        if (yDistanceAwayTop > yDistanceAwayBottom) {
+            var changeInY = yDistanceAwayTop - Math.abs(plotYmax - centerYcoord);
+        } 
+        else {
+            var changeInY = yDistanceAwayBottom - Math.abs(plotYmin - centerYcoord);
+        }
+           
+        var changeInX = (((yRange) + (changeInY * 2) ) / aspectRatio) - xRange;
+            
+        alert("aspect ratio: " + aspectRatio);
+        alert("calculated ratio " + (2*changeInY) / (changeInX));
+            
+        changeAxes( plotXmin - (changeInX / 2 ), plotXmax + (changeInX / 2 ), 
+            plotYmin - (changeInY), plotYmax + (changeInY) );
+    };
+  
+>>>>>>> Stashed changes
     plot.initialized = true;
     plot.manageAxisExtents();
     plot.update(plot.data);

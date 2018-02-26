@@ -77,6 +77,11 @@ public class PlotWindow extends CustomVBox<PlotWindow> {
             snapToCorners.setOnAction(mouseEvent -> {
                 javaScriptPlot.snapToCorners();
             });
+            
+            Button showEllipsesExtents = new Button("Show Ellipses Extents");
+            showEllipsesExtents.setOnAction(mouseEvent -> {
+                javaScriptPlot.showEllipsesExtents();
+            });
 
             Text loadingIndicator = new Text("Loading...");
 
@@ -88,7 +93,7 @@ public class PlotWindow extends CustomVBox<PlotWindow> {
                     Platform::runLater
             );
 
-            plotToolBar.getItems().addAll(saveToSVG, recenter, snapToCorners, loadingIndicator);
+            plotToolBar.getItems().addAll(saveToSVG, recenter, snapToCorners, showEllipsesExtents, loadingIndicator);
         }
     }
 

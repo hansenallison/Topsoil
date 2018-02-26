@@ -95,6 +95,11 @@ public interface Plot extends Displayable {
      * Zooms plot so Concordia displays from corner to corner of plot.
      */
     void snapToCorners();
+    
+    /**
+     * Re-zooms plot to show full extent of ellipses with given cushion. 
+     */
+    void showEllipsesExtents();
 
     /**
      * Attempts to stop the {@code Plot}'s {@link WebEngine} running JavaScript content.

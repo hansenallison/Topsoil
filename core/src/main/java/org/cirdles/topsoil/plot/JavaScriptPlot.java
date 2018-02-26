@@ -361,6 +361,14 @@ public abstract class JavaScriptPlot extends AbstractPlot implements JavaFXDispl
             runOnFxApplicationThread(() -> topsoil.call("snapToCorners"));
         }
     }
+    
+    /**{@inheritDoc}*/
+    @Override
+    public void showEllipsesExtents() {
+        if (topsoil != null) {
+            runOnFxApplicationThread(() -> topsoil.call("showEllipsesExtents"));
+        }
+    }
 
     /**{@inheritDoc}*/
     @Override
