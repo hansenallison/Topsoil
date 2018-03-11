@@ -198,6 +198,8 @@ plot.initialize = function (data) {
     topsoil.snapToCorners = function () {
         
         // get x axis min and find coordinate on y axis 
+        var plotYmin = plot.yAxisScale.domain()[0];
+        var plotYmax = plot.yAxisScale.domain()[1];
         
         // this should be the currrent axis extent 
         var xAxisMin = plot.xAxisScale.domain()[0];
@@ -229,14 +231,10 @@ plot.initialize = function (data) {
         changeAxes( concordiaXMin, concordiaXMax, concordiaYMin, concordiaYMax );
         
     };
-<<<<<<< Updated upstream
-
-=======
     
     //function to show extents of ellipses, zooming out or in to capture ellipses entirely  
     topsoil.showEllipsesExtents = function () {
-     
-        // calculate data ranges 
+        //calculate data ranges 
         var dataXMin = d3.min(plot.data, function (d) {
             return d.x - (d.sigma_x * (plot.uncertainty != null ? plot.uncertainty : 2));
         });
@@ -264,28 +262,26 @@ plot.initialize = function (data) {
         var plotYmin = plot.yAxisScale.domain()[0];
         var plotYmax = plot.yAxisScale.domain()[1];
         
-        var aspectRatio = yRange / xRange; 
-        var centerYcoord = plotYmin + ((plotYmax - plotYmin) / 2);
-        var yDistanceAwayTop = Math.abs(ellipseYmax - centerYcoord);
-        var yDistanceAwayBottom = Math.abs(ellipseYmin - centerYcoord);
-            
-        if (yDistanceAwayTop > yDistanceAwayBottom) {
-            var changeInY = yDistanceAwayTop - Math.abs(plotYmax - centerYcoord);
-        } 
-        else {
-            var changeInY = yDistanceAwayBottom - Math.abs(plotYmin - centerYcoord);
+        var plotYrange = plotYmax - plotYmin;
+        var plotXrange = plotXmax - plotXmin;
+        var plotAspectRatio = plotYrange / plotXrange;
+        if ((ellipseYmax - plotYmax) > Math.abs(ellipseYmin - plotYmin)) {
+            var changeInY = (ellipseYmax - plotYmax) * 2;
         }
-           
-        var changeInX = (((yRange) + (changeInY * 2) ) / aspectRatio) - xRange;
-            
-        alert("aspect ratio: " + aspectRatio);
-        alert("calculated ratio " + (2*changeInY) / (changeInX));
-            
-        changeAxes( plotXmin - (changeInX / 2 ), plotXmax + (changeInX / 2 ), 
-            plotYmin - (changeInY), plotYmax + (changeInY) );
+        else {
+            var changeInY = Math.abs(ellipseYmin - plotYmin) * 2;
+        }
+        
+        // how to zoom out 
+        var changeInX = ((plotYrange + changeInY) / plotAspectRatio) - plotXrange; 
+        var newPlotAspectRatio = ((plotYmax - plotYmin) + changeInY) / ((plotXmax - plotXmin) + changeInX);
+        var newPlotYrange = ((plotYmax + (changeInY / 2)) - (plotYmin - (changeInY / 2))); 
+        var newPlotXrange = (plotXmax + (changeInX / 2)) - (plotXmin - (changeInX / 2));
+        
+        changeAxes((plotXmin - (changeInX / 2)), (plotXmax + (changeInX / 2)), (plotYmin - (changeInY / 2)), (plotYmax + (changeInY / 2)) );
+        
     };
   
->>>>>>> Stashed changes
     plot.initialized = true;
     plot.manageAxisExtents();
     plot.update(plot.data);
